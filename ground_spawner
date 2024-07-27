@@ -1,0 +1,44 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ground_spawner : MonoBehaviour
+{
+    public Transform spawn_pos;
+    public GameObject Ground_Plane_Obj;
+
+    public float Time_To_Spawn;
+    public float Time_btwn_wave;
+
+    public static ground_spawner instance;
+
+    private void Awake()
+    {
+        if(instance == null)
+        {
+            instance = this;
+        }
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if(Time.time > Time_To_Spawn)
+        {
+            Spawn_Ground();
+            Time_To_Spawn = Time.time + Time_btwn_wave;
+        }
+    }
+
+    public void Spawn_Ground()
+    {
+        Instantiate(Ground_Plane_Obj, spawn_pos.position, Quaternion.identity);
+        spawn_pos.position = new Vector3(spawn_pos.position.x, spawn_pos.position.y, spawn_pos.position.z + 30f);
+    }
+}
