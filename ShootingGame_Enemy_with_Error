@@ -1,0 +1,58 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Enemy : MonoBehaviour
+{
+    public float speed = 5;
+    
+    Vector3 dir;
+    
+    public GameObject explosionFactory;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        int randValue = Random.Range(0, 10);
+
+        
+
+        if(randValue < 3)
+        {
+            GameObject target = GameObject.Find("Player");
+
+            dir = target.transform.position - transform.position; // 방향 = 목표 지점 - 현재(출발) 위치 (벡터 개념)
+            dir.Normalize(); // 단위 벡터로 변경 (방향성만 갖는 벡터)
+        }
+        else
+        {
+            dir = Vector3.down;
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        // Vector3 dir = Vector3.down;
+
+        transform.position += dir * speed * Time.deltaTime;
+    }
+
+    private void OnCollisionEnter(Collision collision) // 적이 다른 물체와 충돌
+    {
+        GameObject smObject = GameObject.Find("ScoreManager"); // 씬에서 ScoreManger 객체를 찾는다
+
+        ScoreManager sm = smObject.GetComponent<ScoreManager>(); // ScoreManager 클래스의 속성에 값을 할당
+
+        sm.currentScore++;
+
+        sm.currentScoreUI.text = "현재점수 : " + sm.currentScore;
+
+        GameObject explosion = Instantiate(explosionFactory);
+
+        explosion.transform.position = transform.position;
+
+        Destroy(collision.gameObject);
+        Destroy(gameObject);
+    }
+}
