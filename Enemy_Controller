@@ -1,0 +1,47 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Enemy_Controller : MonoBehaviour
+{
+    public float for_speed;
+    public float side_Speed;
+
+    public Transform center_pos;
+    public Transform left_pos;
+    public Transform right_pos;
+
+    private int current_pos;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        current_pos = 0;
+        Physics.IgnoreLayerCollision(3, 6);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + for_speed * Time.deltaTime);
+
+        if (current_pos == 0)
+        {
+            transform.position = Vector3.Lerp(transform.position, new Vector3(center_pos.position.x, transform.position.y, transform.position.z), side_Speed * Time.deltaTime);
+        }
+        else if (current_pos == 1)
+        {
+            transform.position = Vector3.Lerp(transform.position, new Vector3(left_pos.position.x, transform.position.y, transform.position.z), side_Speed * Time.deltaTime);
+        }
+        else if (current_pos == 2)
+        {
+            transform.position = Vector3.Lerp(transform.position, new Vector3(right_pos.position.x, transform.position.y, transform.position.z), side_Speed * Time.deltaTime);
+        }
+
+        // Random 이동 (예: 5초마다 랜덤 위치로 이동)
+        if (Time.frameCount % 120 == 0) // 약 5초마다 (300 프레임마다) 한 번 실행
+        {
+            current_pos = Random.Range(0, 3); // 0, 1, 2 중 하나의 숫자를 무작위로 선택
+        }
+    }
+}
