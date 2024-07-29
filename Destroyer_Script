@@ -20,7 +20,7 @@ public class Destroyer_Script : MonoBehaviour
     {
         if (collision.gameObject.tag == "Ground")
         {
-            ground_spawner.instance.Spawn_Ground();
+            ground_spawner.instance.SpawnGround();
             Destroy(collision.gameObject);
         }
     }
