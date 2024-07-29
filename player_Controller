@@ -18,8 +18,6 @@ public class player_Controller : MonoBehaviour
     {
         current_pos = 0;
         Physics.IgnoreLayerCollision(3, 6);
-        Physics.IgnoreLayerCollision(3, 8);
-        Physics.IgnoreLayerCollision(3, 9);
     }
 
     // Update is called once per frame
