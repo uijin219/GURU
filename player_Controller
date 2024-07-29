@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class player_Controller : MonoBehaviour
 {
-    public float for_speed;
-    public float side_Speed;
+    public float for_speed = 10;
+    public float side_Speed = 7;
 
     public Transform center_pos;
     public Transform left_pos;
