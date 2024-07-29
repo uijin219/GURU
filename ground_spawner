@@ -74,7 +74,6 @@ public class ground_spawner : MonoBehaviour
 
         // 힐팩 생성
         int numHealPacks = Random.Range(0, 2); // 0~1개의 힐팩 생성
-        Debug.Log($"Number of HealPacks to spawn: {numHealPacks}"); // 힐팩 개수 확인
 
         for (int i = 0; i < numHealPacks; i++)
         {
