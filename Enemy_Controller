@@ -18,6 +18,8 @@ public class Enemy_Controller : MonoBehaviour
     {
         current_pos = 0;
         Physics.IgnoreLayerCollision(6, 7);
+        Physics.IgnoreLayerCollision(7, 8);
+        Physics.IgnoreLayerCollision(7, 9);
     }
 
     // Update is called once per frame
@@ -39,7 +41,7 @@ public class Enemy_Controller : MonoBehaviour
         }
 
         // Random 이동 (예: 5초마다 랜덤 위치로 이동)
-        if (Time.frameCount % 120 == 0) // 약 5초마다 (300 프레임마다) 한 번 실행
+        if (Time.frameCount % 60 == 0) // 약 5초마다 (300 프레임마다) 한 번 실행
         {
             current_pos = Random.Range(0, 3); // 0, 1, 2 중 하나의 숫자를 무작위로 선택
         }
