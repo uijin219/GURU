@@ -91,7 +91,6 @@ public class ground_spawner : MonoBehaviour
 
             Vector3 healPackPos = pos + new Vector3(0f, 0.2f, 0f); // y축을 0.2로 조정
             Instantiate(HealPack, healPackPos, Quaternion.identity);
-            Debug.Log($"HealPack spawned at position: {healPackPos}"); // 위치 확인
         }
     }
 }
