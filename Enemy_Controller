@@ -12,11 +12,14 @@ public class Enemy_Controller : MonoBehaviour
     public Transform right_pos;
 
     private int current_pos;
+    private float elapsedTime;
+    private float changeInterval = 5f; // 위치를 변경할 간격 (5초)
 
     // Start is called before the first frame update
     void Start()
     {
         current_pos = 0;
+        elapsedTime = 0f;
         Physics.IgnoreLayerCollision(6, 7);
         Physics.IgnoreLayerCollision(7, 8);
         Physics.IgnoreLayerCollision(7, 9);
@@ -25,8 +28,10 @@ public class Enemy_Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // 적의 전진 움직임 처리
         transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + for_speed * Time.deltaTime);
 
+        // 적의 측면 움직임 처리
         if (current_pos == 0)
         {
             transform.position = Vector3.Lerp(transform.position, new Vector3(center_pos.position.x, transform.position.y, transform.position.z), side_Speed * Time.deltaTime);
@@ -40,10 +45,14 @@ public class Enemy_Controller : MonoBehaviour
             transform.position = Vector3.Lerp(transform.position, new Vector3(right_pos.position.x, transform.position.y, transform.position.z), side_Speed * Time.deltaTime);
         }
 
-        // Random 이동 (예: 5초마다 랜덤 위치로 이동)
-        if (Time.frameCount % 60 == 0) // 약 5초마다 (300 프레임마다) 한 번 실행
+        // 경과 시간 누적
+        elapsedTime += Time.deltaTime;
+
+        // 일정 시간마다 위치 변경
+        if (elapsedTime >= changeInterval)
         {
             current_pos = Random.Range(0, 3); // 0, 1, 2 중 하나의 숫자를 무작위로 선택
+            elapsedTime = 0f; // 경과 시간 초기화
         }
     }
 }
