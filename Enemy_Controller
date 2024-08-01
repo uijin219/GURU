@@ -21,6 +21,16 @@ public class Enemy_Controller : MonoBehaviour
     public float maxHp = 100;
     public float curHp = 100;
 
+    public GameObject gameLabel;
+    Text gameText;
+
+    public player_Controller PC;
+
+    Animator anim;
+
+    public GameObject Player; // Player 오브젝트를 참조합니다.
+    private Animator PlayerAnimator; // Player의 Animator를 참조합니다.
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,15 +41,21 @@ public class Enemy_Controller : MonoBehaviour
         Physics.IgnoreLayerCollision(7, 9);
 
         hpbar.value = (float)curHp / (float)maxHp;
+
+        gameText = gameLabel.GetComponent<Text>();
+        gameLabel.SetActive(false);
+
+        anim = transform.GetComponentInChildren<Animator>();
+        PlayerAnimator = Player.GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // 적의 전진 움직임 처리
+        PC = FindObjectOfType<player_Controller>();
+
         transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + for_speed * Time.deltaTime);
 
-        // 적의 측면 움직임 처리
         if (current_pos == 0)
         {
             transform.position = Vector3.Lerp(transform.position, new Vector3(center_pos.position.x, transform.position.y, transform.position.z), side_Speed * Time.deltaTime);
@@ -62,7 +78,25 @@ public class Enemy_Controller : MonoBehaviour
             current_pos = Random.Range(0, 3); // 0, 1, 2 중 하나의 숫자를 무작위로 선택
             elapsedTime = 0f; // 경과 시간 초기화
         }
+
+        if(curHp <= 0)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+
+            gameLabel.SetActive(true);
+            gameText.text = ("Game Clear");
+            gameText.color = new Color32(0, 255, 0, 255);
+
+            for_speed = 0;
+            side_Speed = 0;
+            anim.SetTrigger("Enemy_Die");
+
+            PlayerAnimator.SetTrigger("Player_Win");
+            PC.for_speed = 0;
+            PC.side_Speed = 0;
+        }
     }
+
     public void HandleHp()
     {
         hpbar.value = (float)curHp / (float)maxHp;
