@@ -17,6 +17,8 @@ public class GunController : MonoBehaviour
     private bool isReloading = false; // 재장전 여부
     private float nextFireTime = 0f; // 다음 발사 가능 시간
 
+    public bool gameStarted = false;
+
     void Start()
     {
         bulletsLeft = bulletsPerReload; // 초기 총알 수 설정
@@ -27,6 +29,11 @@ public class GunController : MonoBehaviour
 
     void Update()
     {
+        if(!gameStarted)
+        {
+            return;
+        }
+
         if (isReloading)
         {
             // 재장전 중이면 발사 불가
