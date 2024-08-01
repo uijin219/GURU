@@ -1,0 +1,30 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CamSwitch : MonoBehaviour
+{
+    public Camera CustomerCam;
+    public Camera PizzaCam;
+
+    private void Start()
+    {
+        // 게임 시작 시 손님을 응대하는 카메라를 활성화하고, 피자 만드는 카메라는 비활성화합니다.
+        CustomerCam.gameObject.SetActive(true);
+        PizzaCam.gameObject.SetActive(false);
+    }
+
+    public void SwitchToCustomer()
+    {
+        CustomerCam.gameObject.SetActive(true);
+        PizzaCam.gameObject.SetActive(false);
+    }
+
+    public void SwitchToPizzaMaking()
+    {
+        CustomerCam.gameObject.SetActive(false);
+        PizzaCam.gameObject.SetActive(true);
+    }
+
+
+}
