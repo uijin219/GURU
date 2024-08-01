@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Enemy_Controller : MonoBehaviour
 {
@@ -15,6 +16,11 @@ public class Enemy_Controller : MonoBehaviour
     private float elapsedTime;
     private float changeInterval = 5f; // 위치를 변경할 간격 (5초)
 
+    public Slider hpbar;
+
+    public float maxHp = 100;
+    public float curHp = 100;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +29,8 @@ public class Enemy_Controller : MonoBehaviour
         Physics.IgnoreLayerCollision(6, 7);
         Physics.IgnoreLayerCollision(7, 8);
         Physics.IgnoreLayerCollision(7, 9);
+
+        hpbar.value = (float)curHp / (float)maxHp;
     }
 
     // Update is called once per frame
@@ -54,5 +62,9 @@ public class Enemy_Controller : MonoBehaviour
             current_pos = Random.Range(0, 3); // 0, 1, 2 중 하나의 숫자를 무작위로 선택
             elapsedTime = 0f; // 경과 시간 초기화
         }
+    }
+    public void HandleHp()
+    {
+        hpbar.value = (float)curHp / (float)maxHp;
     }
 }
