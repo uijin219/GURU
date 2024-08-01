@@ -19,16 +19,36 @@ public class player_Controller : MonoBehaviour
     public float maxHp = 100;
     public float curHp = 100;
 
+    public GameObject gameLabel;
+    Text gameText;
+
+    public Enemy_Controller EC;
+
+    Animator anim;
+
+    public GameObject Enemy;
+    private Animator EnemyAnimator;
+
     // Start is called before the first frame update
     void Start()
     {
         current_pos = 0;
         Physics.IgnoreLayerCollision(3, 6);
+
+        hpbar.value = (float)curHp / (float)maxHp;
+
+        gameText = gameLabel.GetComponent<Text>();
+        gameLabel.SetActive(false);
+
+        anim = transform.GetComponentInChildren<Animator>();
+        EnemyAnimator = Enemy.GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        EC = FindObjectOfType<Enemy_Controller>();
+
         transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + for_speed * Time.deltaTime);
 
         if (current_pos == 0)
@@ -67,7 +87,25 @@ public class player_Controller : MonoBehaviour
                 current_pos = 0;
             }
         }
+
+        if (curHp <= 0)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            gameLabel.SetActive(true);
+            gameText.text = "Game Over";
+            gameText.color = new Color32(255, 0, 0, 255);
+
+            anim.SetTrigger("Player_Die");
+            EnemyAnimator.SetTrigger("Enemy_Win");
+            for_speed = 0;
+            side_Speed = 0;
+            EC.for_speed = 0;
+            EC.side_Speed = 0;
+        }
+        
+
     }
+
     public void HandleHp()
     {
         hpbar.value = (float)curHp / (float)maxHp;
