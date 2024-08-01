@@ -8,7 +8,11 @@ public class Bullet : MonoBehaviour
 
     void Start()
     {
-
+        // Rigidbody가 있는지 확인하고 없으면 추가합니다.
+        if (GetComponent<Rigidbody>() == null)
+        {
+            gameObject.AddComponent<Rigidbody>().isKinematic = true;
+        }
     }
 
     void Update()
@@ -19,9 +23,16 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log($"Collision detected with {collision.gameObject.name}, Layer: {LayerMask.LayerToName(collision.gameObject.layer)}");
+
         if (collision.gameObject.CompareTag("Enemy"))
         {
             Destroy(gameObject); // Bullet 파괴
+        }
+
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
+        {
+            Destroy(gameObject); // Bullet 제거
         }
     }
 }
