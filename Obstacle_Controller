@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Obstacle_Controller : MonoBehaviour
 {
+    public int ObstaclePower = 20;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +23,18 @@ public class Obstacle_Controller : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             Destroy(gameObject); // 장애물, 힐팩
+
+            player_Controller playerController = collision.gameObject.GetComponent<player_Controller>();
+
+            // HitEnemy 메서드를 호출하여 enemyController의 curHp를 수정
+            HitPlayer(playerController, ObstaclePower);
+            playerController.HandleHp(); // HandleHp 메서드 호출
         }
 
+    }
+    public void HitPlayer(player_Controller playerController, int ObstaclePower)
+    {
+        // curHp를 직접 수정
+        playerController.curHp -= ObstaclePower;
     }
 }
