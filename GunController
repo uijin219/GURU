@@ -1,0 +1,86 @@
+using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class GunController : MonoBehaviour
+{
+    public GameObject bulletPrefab; // 발사할 총알 프리팹
+    public Transform firePoint; // 총알 발사 위치
+    public float fireRate = 0.5f; // 총알 발사 간격
+    public int bulletsPerReload = 5; // 장전당 총알 수
+    public float reloadTime = 5f; // 재장전 시간
+
+    public Text ammoText; // 총알 갯수 텍스트
+    public Slider reloadSlider; // 재장전 쿨타임 슬라이더
+
+    private int bulletsLeft; // 남은 총알 수
+    private bool isReloading = false; // 재장전 여부
+    private float nextFireTime = 0f; // 다음 발사 가능 시간
+
+    void Start()
+    {
+        bulletsLeft = bulletsPerReload; // 초기 총알 수 설정
+        UpdateAmmoText(); // 초기 총알 수 텍스트 업데이트
+        reloadSlider.maxValue = reloadTime; // 재장전 슬라이더 최대값 설정
+        reloadSlider.value = 0; // 초기 재장전 슬라이더 값
+    }
+
+    void Update()
+    {
+        if (isReloading)
+        {
+            // 재장전 중이면 발사 불가
+            return;
+        }
+
+        if (Input.GetButtonDown("Fire1") && Time.time >= nextFireTime)
+        {
+            HandleShooting(); // 총알 발사 처리
+        }
+    }
+
+    void HandleShooting()
+    {
+        if (bulletsLeft <= 0)
+        {
+            StartCoroutine(StartReload()); // 재장전 시작
+            return;
+        }
+
+        bulletsLeft--;
+        UpdateAmmoText(); // 총알 수 텍스트 업데이트
+        nextFireTime = Time.time + fireRate;
+
+        // 총알 생성 및 발사
+        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        Rigidbody rb = bullet.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.velocity = firePoint.forward * 20f; // 총알 속도 설정
+        }
+    }
+
+    IEnumerator StartReload()
+    {
+        isReloading = true;
+        reloadSlider.value = 0; // 재장전 슬라이더 초기화
+        float elapsedTime = 0f;
+
+        while (elapsedTime < reloadTime)
+        {
+            elapsedTime += Time.deltaTime;
+            reloadSlider.value = elapsedTime; // 슬라이더 값 증가
+            yield return null;
+        }
+
+        bulletsLeft = bulletsPerReload;
+        UpdateAmmoText(); // 총알 수 텍스트 업데이트
+        reloadSlider.value = reloadTime; // 재장전 슬라이더 최대값으로 설정
+        isReloading = false;
+    }
+
+    void UpdateAmmoText()
+    {
+        ammoText.text = "총알 개수 : " + bulletsLeft.ToString(); // 총알 수 텍스트 업데이트
+    }
+}
