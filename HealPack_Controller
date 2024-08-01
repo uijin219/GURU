@@ -1,0 +1,39 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class HealPack_Controller : MonoBehaviour
+{
+    public int HealPower = 20;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Destroy(gameObject); // 장애물, 힐팩
+            player_Controller playerController = collision.gameObject.GetComponent<player_Controller>();
+
+            // HitEnemy 메서드를 호출하여 enemyController의 curHp를 수정
+            HealPlayer(playerController, HealPower);
+            playerController.HandleHp(); // HandleHp 메서드 호출
+        }
+    }
+
+    public void HealPlayer(player_Controller playerController, int HealPower)
+    {
+        // curHp를 직접 수정
+        playerController.curHp += HealPower;
+    }
+}
