@@ -13,6 +13,11 @@ public class player_Controller : MonoBehaviour
 
     private int current_pos;
 
+    public Slider hpbar;
+
+    public float maxHp = 100;
+    public float curHp = 100;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -61,5 +66,9 @@ public class player_Controller : MonoBehaviour
                 current_pos = 0;
             }
         }
+    }
+    public void HandleHp()
+    {
+        hpbar.value = (float)curHp / (float)maxHp;
     }
 }
