@@ -37,10 +37,10 @@ public class Bullet : MonoBehaviour
             HitEnemy(enemyController, weaponPower);
             enemyController.HandleHp(); // HandleHp 메서드 호출
         }
-
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
+        else if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacle") || collision.gameObject.layer == LayerMask.NameToLayer("HealPack"))
         {
             Destroy(gameObject); // Bullet 제거
+            Destroy(collision.gameObject);
         }
     }
 
