@@ -5,6 +5,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public float speed = 20;
+    public int weaponPower = 20;
 
     void Start()
     {
@@ -28,11 +29,24 @@ public class Bullet : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             Destroy(gameObject); // Bullet 파괴
+
+            // 충돌한 오브젝트에서 Enemy_Controller 컴포넌트 가져오기
+            Enemy_Controller enemyController = collision.gameObject.GetComponent<Enemy_Controller>();
+
+            // HitEnemy 메서드를 호출하여 enemyController의 curHp를 수정
+            HitEnemy(enemyController, weaponPower);
+            enemyController.HandleHp(); // HandleHp 메서드 호출
         }
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
         {
             Destroy(gameObject); // Bullet 제거
         }
+    }
+
+    public void HitEnemy(Enemy_Controller enemyController, int hitPower)
+    {
+        // curHp를 직접 수정
+        enemyController.curHp -= hitPower;
     }
 }
