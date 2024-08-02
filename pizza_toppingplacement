@@ -1,0 +1,15 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ToppingPlacement : MonoBehaviour
+{
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Topping"))
+        {
+            // 도우 위에 올려진 토핑을 처리하는 로직
+            Debug.Log("Topping placed on dough!");
+        }
+    }
+}
