@@ -1,0 +1,149 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class OvenToBox : MonoBehaviour
+{
+    public Light highlightLight; // 조명 라이트 객체
+    public Camera pizzaCamera; // 피자 카메라
+    public Camera customerCamera; // 손님 카메라
+    public GameObject pizzaBox; // 피자 상자
+    public GameObject pizzaBox1; // 추가할 피자박스1 오브젝트
+    public GameObject pizzaBox2; // 피자박스2 오브젝트
+
+    private bool isPizzaBoxClicked = false; // 피자박스가 클릭되었는지 여부
+
+    private void Start()
+    {
+        // 초기 설정
+        if (highlightLight != null)
+        {
+            highlightLight.enabled = false; // 초기에는 라이트를 비활성화
+        }
+
+        if (pizzaBox1 != null)
+        {
+            pizzaBox1.SetActive(false); // 피자박스1 오브젝트를 처음에는 비활성화
+        }
+
+        if (pizzaBox2 != null)
+        {
+            pizzaBox2.SetActive(false); // 피자박스2 오브젝트를 처음에는 비활성화
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0)) // 마우스 왼쪽 버튼 클릭 시
+        {
+            Ray ray = pizzaCamera.ScreenPointToRay(Input.mousePosition); // PizzaCam에서 광선 생성
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                Debug.Log("Hit: " + hit.collider.name); // 충돌한 객체의 이름을 로그로 출력
+
+                if (hit.collider.CompareTag("Oven"))
+                {
+                    OnOvenClicked();
+                }
+                else if (hit.collider.CompareTag("PizzaBox"))
+                {
+                    OnPizzaBoxClicked();
+                }
+                else if (hit.collider.CompareTag("Customer"))
+                {
+                    OnCustomerClicked();
+                }
+            }
+            else
+            {
+                Debug.Log("Raycast did not hit anything."); // 아무 것도 충돌하지 않았을 경우 로그 출력
+            }
+        }
+
+        if (isPizzaBoxClicked && Input.GetKeyDown(KeyCode.Return)) // 피자박스가 클릭된 상태에서 엔터 키 입력 시
+        {
+            StartCoroutine(MovePizzaBox2WithDelay()); // 피자박스2 이동 코루틴 시작
+            isPizzaBoxClicked = false; // 엔터 입력 후 다시 초기 상태로
+        }
+    }
+
+    private void OnOvenClicked()
+    {
+        if (highlightLight != null)
+        {
+            highlightLight.enabled = true; // 라이트를 활성화
+            Debug.Log("Oven clicked: Highlight light enabled."); // 로그 메시지 출력
+        }
+    }
+
+    private void OnPizzaBoxClicked()
+    {
+        if (highlightLight != null)
+        {
+            highlightLight.enabled = false; // 라이트를 비활성화
+            Debug.Log("Pizza Box clicked: Highlight light disabled."); // 로그 메시지 출력
+
+            if (pizzaCamera != null)
+            {
+                pizzaCamera.gameObject.SetActive(false); // 피자 카메라 비활성화
+            }
+            if (customerCamera != null)
+            {
+                customerCamera.gameObject.SetActive(true); // 손님 카메라 활성화
+            }
+        }
+
+        if (pizzaBox1 != null)
+        {
+            pizzaBox1.SetActive(true); // 피자박스1 오브젝트 활성화
+            Vector3 newPosition = pizzaBox1.transform.position;
+            newPosition.y += 0.14f; // y 값 0.14만큼 이동
+            pizzaBox1.transform.position = newPosition;
+            Debug.Log("Pizza Box clicked: Pizza Box1 activated and moved up.");
+        }
+
+        isPizzaBoxClicked = true; // 피자박스가 클릭되었음을 기록
+    }
+
+    private void OnCustomerClicked()
+    {
+        if (pizzaBox != null)
+        {
+            Destroy(pizzaBox); // 피자 상자 제거
+            Debug.Log("Customer clicked: Pizza Box destroyed."); // 로그 메시지 출력
+        }
+    }
+
+    private IEnumerator MovePizzaBox2WithDelay()
+    {
+
+        pizzaBox2.SetActive(true); // 피자박스2 오브젝트 활성화
+        Vector3 startPosition = pizzaBox2.transform.position;
+
+        // 1초 동안 y값만큼 이동
+        Vector3 position1 = startPosition + new Vector3(0, 0.14f, 0);
+        yield return MoveOverTime(pizzaBox2, startPosition, position1, 1.0f);
+
+        // 0.6초 동안 x값 -2.6만큼 이동
+        Vector3 position2 = position1 + new Vector3(-2.6f, 0, 0);
+        yield return MoveOverTime(pizzaBox2, position1, position2, 0.6f);
+
+        // 0.8초 동안 z값 10만큼 이동
+        Vector3 position3 = position2 + new Vector3(0, 0, 10);
+        yield return MoveOverTime(pizzaBox2, position2, position3, 0.8f);
+    }
+
+    private IEnumerator MoveOverTime(GameObject obj, Vector3 start, Vector3 end, float duration)
+    {
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            obj.transform.position = Vector3.Lerp(start, end, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        obj.transform.position = end; // 최종 위치 보정
+    }
+}
