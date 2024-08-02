@@ -1,0 +1,86 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class OvenToBox : MonoBehaviour
+{
+    public Light highlightLight; // 노란색 하이라이트 조명
+    public Camera pizzaCamera; // 피자 카메라
+    public Camera customerCamera; // 손님 카메라
+    public GameObject pizzaBox; // 피자 박스
+
+    private void Start()
+    {
+        // 초기 설정
+        if (highlightLight != null)
+        {
+            highlightLight.enabled = false; // 초기에는 하이라이트 조명을 비활성화
+        }
+
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0)) // 마우스 왼쪽 버튼 클릭 시
+        {
+            Ray ray = pizzaCamera.ScreenPointToRay(Input.mousePosition); // PizzaCam을 사용하여 Ray 생성
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                Debug.Log("Hit: " + hit.collider.name); // 클릭된 오브젝트의 이름을 출력하여 확인
+
+                if (hit.collider.CompareTag("Oven"))
+                {
+                    OnOvenClicked();
+                }
+                else if (hit.collider.CompareTag("PizzaBox"))
+                {
+                    OnPizzaBoxClicked();
+                }
+            }
+            else
+            {
+                Debug.Log("Raycast did not hit anything."); // 아무 것도 감지되지 않았을 때
+            }
+        }
+    }
+
+    private void OnOvenClicked()
+    {
+        if (highlightLight != null)
+        {
+            highlightLight.enabled = true; // 하이라이트 조명 활성화
+            Debug.Log("Oven clicked: Highlight light enabled."); // 디버깅 메시지
+        }
+    }
+
+    private void OnPizzaBoxClicked()
+    {
+        if (highlightLight != null)
+        {
+            highlightLight.enabled = false; // 하이라이트 조명 비활성화
+            Debug.Log("Pizza Box clicked: Highlight light disabled."); // 디버깅 메시지
+        }
+
+        if (pizzaCamera != null)
+        {
+            pizzaCamera.gameObject.SetActive(false); // 피자 카메라 비활성화
+        }
+        if (customerCamera != null)
+        {
+            customerCamera.gameObject.SetActive(true); // 손님 카메라 활성화
+        }
+
+    }
+
+    private void OnCustomerClicked()
+    {
+        if (pizzaBox != null)
+        {
+            Destroy(pizzaBox); // 피자 박스 제거
+            Debug.Log("Customer clicked: Pizza Box destroyed."); // 디버깅 메시지
+        }
+    }
+}
+
