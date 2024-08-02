@@ -29,6 +29,9 @@ public class player_Controller : MonoBehaviour
     public GameObject Enemy;
     private Animator EnemyAnimator;
 
+    public GameObject EndGame;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,7 +42,7 @@ public class player_Controller : MonoBehaviour
 
         gameText = gameLabel.GetComponent<Text>();
         gameLabel.SetActive(false);
-
+        EndGame.SetActive(false);
         anim = transform.GetComponentInChildren<Animator>();
         EnemyAnimator = Enemy.GetComponent<Animator>();
     }
@@ -90,6 +93,8 @@ public class player_Controller : MonoBehaviour
 
         if (curHp <= 0)
         {
+            EndGame.SetActive(true);
+
             transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
             gameLabel.SetActive(true);
             gameText.text = "Game Over";
