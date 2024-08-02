@@ -1,0 +1,50 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PizzaToppingManager : MonoBehaviour
+{
+    public GameObject sauceCanPrefab;    // 소스통 프리팹
+    public GameObject cheeseCanPrefab;   // 치즈통 프리팹
+    public GameObject doughSaucePrefab;  // 도우 위의 소스 프리팹 (초기에는 비활성화됨)
+    public GameObject doughCheesePrefab; // 도우 위의 치즈 프리팹 (초기에는 비활성화됨)
+    public Camera pizzaCam;               // 피자 화면을 위한 카메라
+
+    void Start()
+    {
+        // 초기 설정: 도우 위의 프리팹들을 비활성화 상태로 설정
+        if (doughSaucePrefab != null) doughSaucePrefab.SetActive(false);
+        if (doughCheesePrefab != null) doughCheesePrefab.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0)) // 마우스 왼쪽 버튼 클릭 시
+        {
+            Ray ray = pizzaCam.ScreenPointToRay(Input.mousePosition); // 화면의 마우스 위치에서 레이 생성
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit)) // 레이캐스트를 사용하여 충돌 정보를 얻음
+            {
+                if (hit.transform.CompareTag("DoughSauce"))
+                {
+                    Debug.Log("SauceCan clicked");
+                    ActivateTopping(doughSaucePrefab);
+                }
+                else if (hit.transform.CompareTag("DoughCheese"))
+                {
+                    Debug.Log("CheeseCan clicked");
+                    ActivateTopping(doughCheesePrefab);
+                }
+            }
+        }
+    }
+
+    void ActivateTopping(GameObject toppingPrefab)
+    {
+        if (toppingPrefab != null)
+        {
+            toppingPrefab.SetActive(true); // 해당 프리팹을 활성화
+        }
+    }
+}
