@@ -24,12 +24,14 @@ public class Enemy_Controller : MonoBehaviour
     public GameObject gameLabel;
     Text gameText;
 
-    public player_Controller PC;
+    private player_Controller pc;
 
     Animator anim;
 
     public GameObject Player; // Player 오브젝트를 참조합니다.
     private Animator PlayerAnimator; // Player의 Animator를 참조합니다.
+
+ 
 
     // Start is called before the first frame update
     void Start()
@@ -52,7 +54,7 @@ public class Enemy_Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        PC = FindObjectOfType<player_Controller>();
+        pc = FindObjectOfType<player_Controller>();
 
         transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + for_speed * Time.deltaTime);
 
@@ -81,6 +83,7 @@ public class Enemy_Controller : MonoBehaviour
 
         if(curHp <= 0)
         {
+            pc.EndGame.SetActive(true);
             transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 
             gameLabel.SetActive(true);
@@ -92,8 +95,8 @@ public class Enemy_Controller : MonoBehaviour
             anim.SetTrigger("Enemy_Die");
 
             PlayerAnimator.SetTrigger("Player_Win");
-            PC.for_speed = 0;
-            PC.side_Speed = 0;
+            pc.for_speed = 0;
+            pc.side_Speed = 0;
         }
     }
 
