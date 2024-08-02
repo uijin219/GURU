@@ -1,0 +1,30 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class ruleUI : MonoBehaviour
+{
+    public GameObject UI;
+    public Button startButton;
+    public Button okayButton;
+
+    void Start()
+    {
+        UI.SetActive(false);
+
+        okayButton.onClick.AddListener(ShowUI);
+    }
+
+    void ShowUI()
+    {
+        UI.SetActive(true);
+        startButton.onClick.AddListener(HideUI);
+    }
+
+    void HideUI()
+    {
+        UI.SetActive(false);
+    }
+
+}
