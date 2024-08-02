@@ -1,0 +1,31 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class UIManager : MonoBehaviour
+{
+    public Button okButton;
+    public CamSwitch cameraSwitcher;
+
+    void Start()
+    {
+        // 오케이 버튼 클릭 이벤트 등록
+        okButton.onClick.AddListener(OnOkButtonClicked);
+        okButton.gameObject.SetActive(false); // 시작 시 버튼 비활성화
+        StartCoroutine(ActivateOkButtonAfterDelay(10f)); // 10초 후에 버튼 활성화
+    }
+
+    IEnumerator ActivateOkButtonAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay); // 지정된 시간 동안 대기
+        okButton.gameObject.SetActive(true); // 버튼 활성화
+    }
+
+    void OnOkButtonClicked()
+    {
+        // 버튼 클릭 시 카메라 전환
+        cameraSwitcher.SwitchToPizzaMaking();
+        okButton.gameObject.SetActive(false);
+    }
+}
