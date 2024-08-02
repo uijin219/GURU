@@ -2,17 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UIButton = UnityEngine.UI.Button;  // Button 별칭을 UIButton으로 변경
 
 public class ruleUI : MonoBehaviour
 {
     public GameObject UI;
-    public Button startButton;
-    public Button okayButton;
+    public UIButton startButton;
+    public UIButton okayButton;
 
     void Start()
     {
+        // UI 초기 상태 비활성화
         UI.SetActive(false);
 
+        // OK 버튼 클릭 시 ShowUI 메서드 호출
         okayButton.onClick.AddListener(ShowUI);
     }
 
@@ -22,9 +25,8 @@ public class ruleUI : MonoBehaviour
         startButton.onClick.AddListener(HideUI);
     }
 
-    void HideUI()
+    public void HideUI()
     {
         UI.SetActive(false);
     }
-
 }
