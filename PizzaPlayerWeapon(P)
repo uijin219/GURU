@@ -1,0 +1,122 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace MyGame
+{
+    public class Weapon : MonoBehaviour
+    {
+        private void OnCollisionEnter(Collision collision)
+        {
+            Destroy(gameObject, 1.5f);
+        }
+
+        public GameObject player;
+        public Transform WeaponController;
+
+        private bool isEquipped = false;
+        public float throwPower = 10f;
+        public LayerMask floorMask;
+        private Rigidbody weaponRigidbody;
+        private Animator playerAnimator;
+
+        void Start()
+        {
+            weaponRigidbody = GetComponent<Rigidbody>();
+            playerAnimator = player.GetComponentInChildren<Animator>();
+
+            if (playerAnimator == null)
+            {
+                Debug.LogError("Animator component missing on the Player game object or its children.");
+            }
+        }
+
+        void Update()
+        {
+            if (Input.GetMouseButtonDown(1)) // 오른쪽 클릭으로 변경
+            {
+                if (isEquipped)
+                {
+                    DropWeapon();
+                }
+                else
+                {
+                    EquipWeapon();
+                }
+            }
+        }
+
+        void EquipWeapon()
+        {
+            transform.SetParent(WeaponController);
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+            weaponRigidbody.isKinematic = true;
+
+            isEquipped = true;
+        }
+
+        void DropWeapon()
+        {
+            transform.SetParent(null);
+            weaponRigidbody.isKinematic = false;
+
+            Vector3 throwAngle = CalculateThrowAngle();
+            throwAngle.y = 25f;
+
+            weaponRigidbody.AddForce(throwAngle * throwPower, ForceMode.Impulse);
+
+            // if (playerAnimator != null)
+            // {
+            //     if (playerAnimator.HasParameter("doThrow"))
+            //     {
+            //         playerAnimator.SetTrigger("doThrow");
+            //     }
+            //     else
+            //     {
+            //         Debug.LogError("Animator does not have a parameter named 'doThrow'.");
+            //     }
+            // }
+            // else
+            // {
+            //     Debug.LogError("Animator component not found on the Player game object.");
+            // }
+
+            isEquipped = false;
+        }
+
+        Vector3 CalculateThrowAngle()
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit rayHit;
+            float rayLength = 500f;
+            Vector3 throwAngle;
+
+            if (Physics.Raycast(ray, out rayHit, rayLength, floorMask))
+            {
+                throwAngle = rayHit.point - WeaponController.position;
+            }
+            else
+            {
+                throwAngle = transform.forward * 50f;
+            }
+
+            return throwAngle;
+        }
+    }
+
+    // public static class AnimatorExtensions
+    // {
+    //     public static bool HasParameter(this Animator animator, string paramName)
+    //     {
+    //         foreach (AnimatorControllerParameter param in animator.parameters)
+    //         {
+    //             if (param.name == paramName)
+    //             {
+    //                 return true;
+    //             }
+    //         }
+    //         return false;
+    //     }
+    // }
+}
