@@ -1,0 +1,221 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace MyGame
+{
+    public class CustomerMove2 : MonoBehaviour
+    {
+        public Vector3 startPosition;
+        public Vector3 moveToPosition1;
+        public Vector3 moveToPosition2;
+        public Vector3 moveToPosition3;
+        public Vector3 moveToPosition4;
+        public Vector3 moveToPosition5;
+        public Vector3 moveToPosition6;
+        public float moveDuration1 = 5f;
+        public float moveDuration2 = 1.5f;
+        public float moveDuration3 = 1.5f;
+        public float moveDuration4 = 1f;
+        public float moveDuration5 = 1.5f;
+        public float moveDuration6 = 5f;
+        public GameObject talkPanel; // 대화창 오브젝트
+
+        // 손님 체력 변수
+        public int hp = 20;
+        // 최대 체력 변수
+        int maxHp = 20;
+        // hp 슬라이더 변수
+        public Slider hpSlider;
+
+        private float elapsedTime = 0f;
+        private int currentPhase = 0;
+        private CharacterController cc; // CharacterController 변수 선언
+        private Animator animator; // Animator 변수 선언
+
+        // 손님 상태 상수
+        enum Customer2State
+        {
+            Idle_A,
+            Run,
+            Hit,
+            Death
+        }
+        // 손님 상태 변수
+        Customer2State m_State;
+
+        // 대기 상태 함수
+        void Idle_A()
+        {
+            if (cc.velocity.magnitude > 0.1f)
+            {
+                m_State = Customer2State.Run;
+            }
+        }
+
+        public void Hit(int damage)
+        {
+            if (m_State == Customer2State.Hit || m_State == Customer2State.Death)
+            {
+                return;
+            }
+
+            hp -= damage;
+
+            StartCoroutine(DamageProcess());
+
+            if (hp > 0)
+            {
+                m_State = Customer2State.Hit;
+            }
+            else
+            {
+                m_State = Customer2State.Death;
+                Death();
+            }
+        }
+
+        IEnumerator DamageProcess()
+        {
+            yield return new WaitForSeconds(0.5f);
+            m_State = Customer2State.Idle_A;
+        }
+
+        void Death()
+        {
+            StopAllCoroutines();
+            cc.enabled = false;
+        }
+
+        void Run()
+        {
+            if (cc.velocity.magnitude < 0.1f)
+            {
+                m_State = Customer2State.Idle_A;
+            }
+        }
+
+        void Start()
+        {
+            cc = GetComponent<CharacterController>(); // CharacterController 초기화
+            animator = GetComponentInChildren<Animator>(); // 하위 오브젝트에서 Animator를 찾도록 변경
+
+            if (animator == null)
+            {
+                Debug.LogError("Animator component missing on the Customer game object or its children.");
+            }
+
+            startPosition = transform.position;
+            moveToPosition1 = startPosition + new Vector3(0, 0, -10); // z 값 -10만큼 이동
+            moveToPosition2 = moveToPosition1 + new Vector3(2.6f, 0, 0); // x 값 2.6만큼 이동
+            moveToPosition3 = moveToPosition2 + new Vector3(0, 0, -0.7f); // z 값 -0.7만큼 이동
+            moveToPosition4 = moveToPosition3 + new Vector3(0, 0, 0); // z 값 그대로
+            moveToPosition5 = moveToPosition4 + new Vector3(-2.6f, 0, 0); // x 값 -2.6만큼 이동
+            moveToPosition6 = moveToPosition5 + new Vector3(0, 0, 10); // z 값 10만큼 이동
+            talkPanel.SetActive(false);
+        }
+
+        void Update()
+        {
+            elapsedTime += Time.deltaTime;
+
+            switch (currentPhase)
+            {
+                case 0:
+                    MoveObject(startPosition, moveToPosition1, moveDuration1);
+                    if (elapsedTime >= moveDuration1)
+                    {
+                        elapsedTime = 0f;
+                        currentPhase = 1;
+                        transform.position = moveToPosition1;
+                    }
+                    break;
+                case 1:
+                    MoveObject(moveToPosition1, moveToPosition2, moveDuration2);
+                    if (elapsedTime >= moveDuration2)
+                    {
+                        elapsedTime = 0f;
+                        currentPhase = 2;
+                        transform.position = moveToPosition2;
+                    }
+                    break;
+                case 2:
+                    MoveObject(moveToPosition2, moveToPosition3, moveDuration3);
+                    if (elapsedTime >= moveDuration3)
+                    {
+                        elapsedTime = 0f;
+                        currentPhase = 3;
+                        transform.position = moveToPosition3;
+                        talkPanel.SetActive(true); // 특정 위치 도달 시 대화창 활성화
+                    }
+                    break;
+                case 3:
+                    if (Input.GetKeyDown(KeyCode.Return)) // 엔터 키 입력 감지
+                    {
+                        elapsedTime = 0f;
+                        currentPhase = 4;
+                    }
+                    break;
+                case 4:
+                    MoveObject(moveToPosition3, moveToPosition4, moveDuration4);
+                    if (elapsedTime >= moveDuration4)
+                    {
+                        elapsedTime = 0f;
+                        currentPhase = 5;
+                        transform.position = moveToPosition4;
+                    }
+                    break;
+                case 5:
+                    MoveObject(moveToPosition4, moveToPosition5, moveDuration5);
+                    if (elapsedTime >= moveDuration5)
+                    {
+                        elapsedTime = 0f;
+                        currentPhase = 6;
+                        transform.position = moveToPosition5;
+                    }
+                    break;
+                case 6:
+                    MoveObject(moveToPosition5, moveToPosition6, moveDuration6);
+                    if (elapsedTime >= moveDuration6)
+                    {
+                        elapsedTime = 0f;
+                        currentPhase = 7;
+                        transform.position = moveToPosition6;
+                        talkPanel.SetActive(false); // 다시 돌아간 후 대화창 비활성화
+                        gameObject.SetActive(false);
+                    }
+                    break;
+            }
+
+            switch (m_State)
+            {
+                case Customer2State.Idle_A:
+                    Idle_A();
+                    break;
+                case Customer2State.Run:
+                    Run();
+                    break;
+                case Customer2State.Hit:
+                    // Hit() 메소드는 이미 데미지를 받을 때 호출되므로 여기서는 아무 것도 하지 않음
+                    break;
+                case Customer2State.Death:
+                    Death();
+                    break;
+            }
+
+            hpSlider.value = (float)hp / (float)maxHp;
+        }
+
+        void MoveObject(Vector3 start, Vector3 end, float duration)
+        {
+            float t = elapsedTime / duration;
+            transform.position = Vector3.Lerp(start, end, t);
+            Vector3 direction = (end - start).normalized;
+            if (direction != Vector3.zero)
+            {
+                transform.rotation = Quaternion.LookRotation(direction, transform.up);
+            }
+        }
+    }
+}
