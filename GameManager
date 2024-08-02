@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
     private GunController gc;
 
     // Start is called before the first frame update
-    void Start()
+    public void countdown()
     {
         gc = player.GetComponent<GunController>();
 
@@ -62,9 +62,4 @@ public class GameManager : MonoBehaviour
         gameLabel.SetActive(false); //비활성화 시킨거임
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
