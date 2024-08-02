@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 public class GameStart : MonoBehaviour
 {
     public GameObject SG;
+    public GameManager GM;
 
     void Start()
     {
@@ -12,9 +13,10 @@ public class GameStart : MonoBehaviour
 
     public void StartGame()
     {
+        GM = FindObjectOfType<GameManager>();
         SG.SetActive(false);
         Time.timeScale = 1;
-        
+        GM.countdown();
     }
 
 
