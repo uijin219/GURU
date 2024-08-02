@@ -1,0 +1,50 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PizzaToppingManager : MonoBehaviour
+{
+    public GameObject sauceCanPrefab;    
+    public GameObject cheeseCanPrefab;   
+    public GameObject doughSaucePrefab;  
+    public GameObject doughCheesePrefab; 
+    public Camera pizzaCam;               
+
+    void Start()
+    {
+        
+        if (doughSaucePrefab != null) doughSaucePrefab.SetActive(false);
+        if (doughCheesePrefab != null) doughCheesePrefab.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0)) 
+        {
+            Ray ray = pizzaCam.ScreenPointToRay(Input.mousePosition); 
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit)) 
+            {
+                if (hit.transform.CompareTag("DoughSauce"))
+                {
+                    Debug.Log("SauceCan clicked");
+                    ActivateTopping(doughSaucePrefab);
+                }
+                else if (hit.transform.CompareTag("DoughCheese"))
+                {
+                    Debug.Log("CheeseCan clicked");
+                    ActivateTopping(doughCheesePrefab);
+                }
+            }
+        }
+    }
+
+    void ActivateTopping(GameObject toppingPrefab)
+    {
+        if (toppingPrefab != null)
+        {
+            toppingPrefab.SetActive(true); 
+        }
+    }
+}
