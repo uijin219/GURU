@@ -1,0 +1,48 @@
+using UnityEngine;
+
+public class CamFollow : MonoBehaviour
+{
+    // 타겟 변수
+    public Transform target;
+    // 카메라와 타겟 사이의 거리
+    public Vector3 offset;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        // target 변수가 할당되지 않은 경우
+        if (target == null)
+        {
+            // 예: "Player" 태그를 가진 게임 오브젝트를 찾습니다.
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                target = player.transform;
+            }
+            else
+            {
+                Debug.LogError("Player with tag 'Player' not found.");
+            }
+        }
+
+        // 초기 오프셋을 설정합니다.
+        if (target != null)
+        {
+            offset = transform.position - target.position;
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (target != null)
+        {
+            // 타겟의 위치를 기준으로 카메라 위치를 업데이트합니다.
+            transform.position = target.position + offset;
+        }
+        else
+        {
+            Debug.LogError("Target is not assigned.");
+        }
+    }
+}
