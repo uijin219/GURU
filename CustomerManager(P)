@@ -1,0 +1,49 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CustomerManager : MonoBehaviour
+
+{
+    public GameObject[] customers; // 모든 캐릭터를 배열로 관리
+    private int currentIndex = 0; // 현재 활성화된 캐릭터 인덱스
+
+    void Start()
+    {
+        if (customers.Length > 0)
+        {
+            ShowCustomer(0); // 첫 번째 캐릭터를 활성화
+        }
+    }
+
+    void Update()
+    {
+        // 현재 활성화된 캐릭터가 비활성화되면 다음 캐릭터를 활성화
+        if (customers.Length > 0 && !customers[currentIndex].activeSelf)
+        {
+            ShowNextCustomer();
+        }
+    }
+
+    void ShowCustomer(int index)
+    {
+        if (index >= 0 && index < customers.Length)
+        {
+            // 모든 캐릭터를 비활성화
+            foreach (var customer in customers)
+            {
+                customer.SetActive(false);
+            }
+
+            // 지정된 인덱스의 캐릭터를 활성화
+            customers[index].SetActive(true);
+            currentIndex = index;
+        }
+    }
+
+    void ShowNextCustomer()
+    {
+        int nextIndex = (currentIndex + 1) % customers.Length;
+        ShowCustomer(nextIndex);
+    }
+}
