@@ -1,0 +1,59 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+public class DraggableTopping : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+{
+    public Camera pizzacam; // 피자 카메라를 공용으로 설정
+
+    private Vector3 offset;
+    private bool isDragging = false;
+
+    private void Update()
+    {
+        if (isDragging)
+        {
+            DragObject();
+        }
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        Vector3 mouseWorldPosition = GetMouseWorldPosition(eventData.position);
+        offset = transform.position - mouseWorldPosition;
+        isDragging = true;
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        // DragObject를 호출하지 않음.
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        isDragging = false;
+    }
+
+    private void DragObject()
+    {
+        Vector3 mouseWorldPosition = GetMouseWorldPosition(Input.mousePosition);
+        Vector3 newPosition = mouseWorldPosition + offset;
+        newPosition.y = transform.position.y; // y축 고정
+        transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * 10); // 부드러운 이동
+    }
+
+    private Vector3 GetMouseWorldPosition(Vector3 screenPosition)
+    {
+        Ray ray = pizzacam.ScreenPointToRay(screenPosition);
+        Plane plane = new Plane(Vector3.up, Vector3.zero); // 수평 평면을 정의
+
+        float distance;
+        if (plane.Raycast(ray, out distance))
+        {
+            return ray.GetPoint(distance);
+        }
+
+        return transform.position;
+    }
+}
