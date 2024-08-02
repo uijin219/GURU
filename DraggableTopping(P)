@@ -1,0 +1,58 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+public class DraggableTopping : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+{
+    public Camera pizzacam;
+
+    private Vector3 offset;
+    private bool isDragging = false;
+
+    private void Update()
+    {
+        if (isDragging)
+        {
+            DragObject();
+        }
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        offset = transform.position - GetMouseWorldPosition();
+        isDragging = true;
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        isDragging = false;
+    }
+
+    private void DragObject()
+    {
+        Vector3 mouseWorldPosition = GetMouseWorldPosition();
+        Vector3 newPosition = mouseWorldPosition + offset;
+        newPosition.y = transform.position.y; 
+        transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * 10); 
+    }
+
+    private Vector3 GetMouseWorldPosition()
+    {
+        Ray ray = pizzacam.ScreenPointToRay(Input.mousePosition); 
+        Plane plane = new Plane(Vector3.up, Vector3.zero); 
+
+        float distance;
+        if (plane.Raycast(ray, out distance))
+        {
+            return ray.GetPoint(distance);
+        }
+
+        return transform.position;
+    }
+}
