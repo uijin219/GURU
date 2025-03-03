@@ -1,0 +1,23 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerMove : MonoBehaviour
+{
+    public float moveSpeed = 5f;  // 캐릭터의 이동 속도
+    public float minX = -10f;     // 이동할 수 있는 최소 X 값
+    public float maxX = 10f;      // 이동할 수 있는 최대 X 값
+
+    void Update()
+    {
+        // 수평 입력값을 가져옴 (A/D 키 또는 좌/우 화살표 키)
+        float horizontal = -Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
+
+        // 새로운 위치 계산
+        Vector3 newPosition = transform.position + new Vector3(horizontal, 0, 0);
+
+        newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
+
+        transform.position = newPosition;
+    }
+}
