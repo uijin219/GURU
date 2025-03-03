@@ -1,0 +1,97 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class OvenToBox : MonoBehaviour
+{
+    public Light highlightLight;
+    public Camera pizzaCamera;
+    public Camera customerCamera;
+    public GameObject pizzaBox;
+    public GameObject customer;
+
+    private void Start()
+    {
+        // 초기 설정
+        if (highlightLight != null)
+        {
+            highlightLight.enabled = false;
+        }
+
+        if (pizzaCamera != null)
+        {
+            pizzaCamera.gameObject.SetActive(true);
+        }
+        if (customerCamera != null)
+        {
+            customerCamera.gameObject.SetActive(false);
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = pizzaCamera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                Debug.Log("Hit: " + hit.collider.name);
+
+                if (hit.collider.CompareTag("Oven"))
+                {
+                    OnOvenClicked();
+                }
+                else if (hit.collider.CompareTag("PizzaBox"))
+                {
+                    OnPizzaBoxClicked();
+                }
+                else if (hit.collider.CompareTag("Customer"))
+                {
+                    OnCustomerClicked();
+                }
+            }
+            else
+            {
+                Debug.Log("Raycast did not hit anything."); // 아무 것도 감지되지 않았을 때
+            }
+        }
+    }
+
+    private void OnOvenClicked()
+    {
+        if (highlightLight != null)
+        {
+            highlightLight.enabled = true;
+            Debug.Log("Oven clicked: Highlight light enabled.");
+        }
+    }
+
+    private void OnPizzaBoxClicked()
+    {
+        if (highlightLight != null)
+        {
+            highlightLight.enabled = false; // 하이라이트 조명 비활성화
+            Debug.Log("Pizza Box clicked: Highlight light disabled.");
+        }
+
+        if (pizzaCamera != null)
+        {
+            pizzaCamera.gameObject.SetActive(false);
+        }
+        if (customerCamera != null)
+        {
+            customerCamera.gameObject.SetActive(true);
+        }
+
+        if (pizzaBox != null && customer != null)
+        {
+            // 피자 박스의 부모를 손님으로 설정
+            pizzaBox.transform.SetParent(customer.transform);
+
+            // 피자 박스의 위치를 손님 객체의 중앙으로 설정
+            pizzaBox.transform.localPosition = Vector3.zero;
+            Debug.Log("Pizza Box moved to customer center.");
+        }
+    }
