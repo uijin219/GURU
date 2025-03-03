@@ -1,0 +1,31 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class ruleUI : MonoBehaviour
+{
+    public GameObject UI;
+    public Button startButton;
+    public Button okayButton;
+
+    void Start()
+    {
+        // 규칙 패널을 처음에는 비활성화 상태로 설정
+        UI.SetActive(false);
+
+        okayButton.onClick.AddListener(ShowUI);
+    }
+
+    void ShowUI()
+    {
+        UI.SetActive(true);
+        startButton.onClick.AddListener(HideUI);
+    }
+
+    void HideUI()
+    {
+        UI.SetActive(false);
+    }
+
+}
