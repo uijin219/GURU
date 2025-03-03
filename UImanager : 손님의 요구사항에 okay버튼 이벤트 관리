@@ -1,0 +1,24 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class UIManager : MonoBehaviour
+{
+    public Button okButton;
+    public CamSwitch cameraSwitcher;
+
+    void Start()
+    {
+        // 오케이 버튼 클릭 이벤트 등록
+        okButton.onClick.AddListener(OnOkButtonClicked);
+    }
+
+    void OnOkButtonClicked()
+    {
+        // 버튼 클릭 시 카메라 전환
+        cameraSwitcher.SwitchToPizzaMaking();
+        okButton.gameObject.SetActive(false);
+    }
+}
+
